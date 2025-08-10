@@ -5,6 +5,17 @@ class CombatManager:
         self.attackers = []
         self.combat_assignments = {}  # {attacker: blocker}
     
+    def can_block(self, attacker, blocker):
+        """Check if a blocker can legally block an attacker based on abilities"""
+        # First check if the blocker can actually block (not tapped, alive, etc.)
+        if not blocker.can_block():
+            return False
+        
+        # Then check flying rules - flying creatures can only be blocked by creatures with flying (or reach when implemented)
+        if attacker.flying and not blocker.flying:
+            return False
+        return True
+    
     def declare_attackers(self):
         """Let attacking player choose attackers"""
         available_attackers = self.attacking_player.get_available_attackers()
@@ -17,7 +28,8 @@ class CombatManager:
         print("Available attackers:")
         
         for i, creature in enumerate(available_attackers):
-            print(f"{i + 1}. {creature}")
+            flying_status = " (Flying)" if creature.flying else ""
+            print(f"{i + 1}. {creature}{flying_status}")
         
         print("0. Done selecting attackers")
         
@@ -54,7 +66,8 @@ class CombatManager:
             print(f"\n=== ATTACKING CREATURES ===")
             for i, attacker in enumerate(self.attackers):
                 blocked_status = "BLOCKED" if attacker in self.combat_assignments else "UNBLOCKED"
-                print(f"{i + 1}. {attacker} - {blocked_status}")
+                flying_status = " (Flying)" if attacker.flying else ""
+                print(f"{i + 1}. {attacker}{flying_status} - {blocked_status}")
             
             print(f"\n=== {self.defending_player.name}'s DEFENDING CREATURES ===")
             current_blockers = [b for b in available_blockers if b.can_block() and b not in self.combat_assignments.values()]
@@ -64,7 +77,8 @@ class CombatManager:
                 break
                 
             for i, blocker in enumerate(current_blockers):
-                print(f"{i + 1}. {blocker}")
+                flying_status = " (Flying)" if blocker.flying else ""
+                print(f"{i + 1}. {blocker}{flying_status}")
             
             print("\nOptions:")
             print("0. Take remaining damage (stop blocking)")
@@ -96,6 +110,11 @@ class CombatManager:
                         if 1 <= attacker_choice <= len(unblocked_attackers):
                             selected_attacker = unblocked_attackers[attacker_choice - 1]
                             
+                            # Check if the block is legal (flying rules)
+                            if not self.can_block(selected_attacker, selected_blocker):
+                                print(f"{selected_blocker.name} cannot block {selected_attacker.name} - flying creatures can only be blocked by creatures with flying!")
+                                continue
+                            
                             # Assign the block
                             self.combat_assignments[selected_attacker] = selected_blocker
                             print(f"\n{selected_blocker.name} blocks {selected_attacker.name}!")
@@ -122,6 +141,7 @@ class CombatManager:
                 print(f"\n{attacker.name} vs {blocker.name}:")
                 
                 # Both deal damage simultaneously using get_power()
+                # In MTG, if a block is legal (already established), both creatures deal damage
                 attacker_dies = attacker.take_damage(blocker.get_power())
                 blocker_dies = blocker.take_damage(attacker.get_power())
                 

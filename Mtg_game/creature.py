@@ -2,7 +2,7 @@ from card import Card
 
 class Creature(Card):
     
-    def __init__(self, name, mana_cost, power, toughness):
+    def __init__(self, name, mana_cost, power, toughness, abilities):
         
         if power < 0:
             raise ValueError("Power cannot be negative")
@@ -18,6 +18,17 @@ class Creature(Card):
         self.current_toughness = toughness
         # Dictionary to store +X/+X counters: {power_bonus: count}
         self.counters = {}
+        #not implemented 
+        self.flying = False
+        #not implemented
+        self.haste = False
+        #not implemented
+        self.vigilance = False
+        #not implemented 
+        self.first_turn = True
+        
+        # Initialize abilities
+        self.init_abilities(abilities)
         
         
     def __str__(self):
@@ -26,6 +37,23 @@ class Creature(Card):
             return f"{super().__str__()} [{current_power}/{self.current_toughness}] (Base: {self.power}/{self.toughness})"
         else:
             return f"{super().__str__()} [{current_power}/{self.current_toughness}]"
+        
+    def init_abilities(self, abilities):
+        if len(abilities) < 1:
+            return 
+        
+        for i in range(len(abilities)):
+            ability = abilities[i].lower()
+            match ability:
+                case "flying":
+                    self.flying = True
+                    
+                case "haste":
+                    self.haste = True
+                    
+                case "vigilance":
+                    self.vigilance = True
+        return
     
     def tap(self):
         self.is_tapped = True

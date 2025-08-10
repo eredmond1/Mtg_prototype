@@ -8,13 +8,13 @@ def main():
     player2 = Player("Bob")
     
     # Give players creatures
-    player1.add_creature(Creature("Red Dragon", 6, 5, 5))
-    player1.add_creature(Creature("Goblin Warrior", 2, 2, 1))
-    player1.add_creature(Creature("Lightning Elemental", 3, 4, 1))
+    player1.add_creature(Creature("Red Dragon", 6, 5, 5,["flying"]))
+    player1.add_creature(Creature("Goblin Warrior", 2, 2, 1, ["flying"]))
+    player1.add_creature(Creature("Lightning Elemental", 3, 4, 1,[]))
     
-    player2.add_creature(Creature("White Knight", 3, 2, 3))
-    player2.add_creature(Creature("Wall of Stone", 2, 0, 7))
-    player2.add_creature(Creature("Guardian Angel", 5, 3, 4))
+    player2.add_creature(Creature("White Knight", 3, 2, 3,[]))
+    player2.add_creature(Creature("Wall of Stone", 2, 0, 7, []))
+    player2.add_creature(Creature("Guardian Angel", 5, 3, 4, ["flying"]))
     
     # Remove summoning sickness for demo
     player1.untap_all_creatures()
