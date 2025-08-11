@@ -1,4 +1,6 @@
-
+import random
+from card import Card  # If you need to check card types
+from creature import Creature 
 
 class Player:
     def __init__(self, name, starting_life=20):
@@ -6,7 +8,10 @@ class Player:
         self.life = starting_life
         self.creatures = []
         self.hand = []
-        self.mana = 0
+        #red blue green white black 
+        self.mana = [0,0,0,0,0]
+        self.tapped_mana = [0,0,0,0,0]
+        self.deck = []
     
     def add_creature(self, creature):
         """Add a creature to this player's battlefield"""
@@ -20,6 +25,31 @@ class Player:
     def get_available_blockers(self):
         """Get all creatures that can block"""
         return [c for c in self.creatures if c.can_block()]
+    
+    def add_to_hand(self, card):
+        self.hand.append(card)
+        
+    def shuffle_deck(self):
+        self.deck = random.shuffle(self.deck)
+        
+    def add_to_mana(self, card):
+        match card.mana_type:
+            case "red": self.mana[0] += 1
+            case "blue": self.mana[1] += 1
+            case "green": self.mana[2] +=1
+            case "white": self.mana[3] += 1
+            case "black": self.mana[4] += 1        
+        
+    def play_card(self,card):
+        card.card_type = card.card_type.lower()
+        
+        match card.card_type:
+            case "mana": self.add_to_mana(card)
+            
+
+    def draw_card(self):
+        new_card = self.deck.pop()
+        self.deck.append(new_card)
     
     def take_damage(self, damage):
         """Player takes damage"""
@@ -42,6 +72,10 @@ class Player:
         for creature in self.creatures:
             creature.untap()
             creature.resolve_summoning_sickness()
+            
+    def untap_all_mana(self):
+        for i in range(len(self.mana)):
+            self.mana[i] += self.tapped_mana[i]
     
     def __str__(self):
         return f"{self.name} (Life: {self.life}, Creatures: {len(self.creatures)})"
