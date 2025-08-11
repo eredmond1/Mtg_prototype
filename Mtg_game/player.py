@@ -1,6 +1,6 @@
 import random
-from card import Card  # If you need to check card types
-from creature import Creature 
+from Mtg_game.Cards.card import Card  # If you need to check card types
+from Mtg_game.Cards.creature import Creature 
 
 class Player:
     def __init__(self, name, starting_life=20):
@@ -48,8 +48,11 @@ class Player:
             
 
     def draw_card(self):
-        new_card = self.deck.pop()
-        self.deck.append(new_card)
+        if self.deck:
+            new_card = self.deck.pop(0)
+            self.hand.append(new_card)
+        else:
+            print(f"{self.name} has no cards left to draw!")
     
     def take_damage(self, damage):
         """Player takes damage"""

@@ -1,5 +1,5 @@
-from player import Player 
-class UntapPhase:
+from Mtg_game.player import Player 
+class UntapStep:
     
     def execute(self, player):
         print(f"\n--- {player.name}'s Untap Phase --- \n")

@@ -1,6 +1,6 @@
-from creature import Creature
-from player import Player 
-from combat_manager import CombatManager
+from Mtg_game.Cards.creature import Creature
+from Mtg_game.player import Player 
+from Mtg_game.GameStateManagers.TurnState.combat_manager import CombatManager
 
 def main():
     # Create players
