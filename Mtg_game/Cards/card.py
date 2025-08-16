@@ -10,5 +10,9 @@ class Card:
         
     def __str__(self):
         return f"{self.name} ({self.card_type}) - Cost: {self.mana_cost}"
-
     
+    def get_mana_cost(self):
+        return self.mana_cost
+
+    def get_card_type(self):
+        return self.card_type

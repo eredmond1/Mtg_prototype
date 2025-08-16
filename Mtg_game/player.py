@@ -12,6 +12,9 @@ class Player:
         self.mana = [0,0,0,0,0]
         self.tapped_mana = [0,0,0,0,0]
         self.deck = []
+        self.active_cards = []
+        self.graveyard = []
+        self.exile = []
     
     def add_creature(self, creature):
         """Add a creature to this player's battlefield"""
@@ -40,11 +43,6 @@ class Player:
             case "white": self.mana[3] += 1
             case "black": self.mana[4] += 1        
         
-    def play_card(self,card):
-        card.card_type = card.card_type.lower()
-        
-        match card.card_type:
-            case "mana": self.add_to_mana(card)
             
 
     def draw_card(self):
@@ -79,6 +77,50 @@ class Player:
     def untap_all_mana(self):
         for i in range(len(self.mana)):
             self.mana[i] += self.tapped_mana[i]
+            self.tapped_mana[i] = 0
     
     def __str__(self):
         return f"{self.name} (Life: {self.life}, Creatures: {len(self.creatures)})"
+    
+    def print_hand(self):
+        print(f"\n{self.name}'s hand\n")
+        if not self.hand:
+            print("\nYou have no cards to play\n")
+        else:
+            for i, card in enumerate(self.hand, 1):
+                print(f"{i}. {card}")
+                
+    def get_hand_count(self):
+        return len(self.hand)
+    
+    def mana_check(self, card):
+        card_mana = card.get_mana_cost()
+        enough_mana = all(player_mana_color >= card_mana_color for player_mana_color, card_mana_color in zip(self.mana, card_mana))
+        return enough_mana
+    
+    def take_mana(self, card):
+        card_mana = card.get_mana_cost()
+        for i in range(len(self.mana)):
+            self.mana[i] -= card_mana[i]
+            self.tapped_mana[i] += card_mana[i] 
+            
+            
+    def play_card(self, card_num):
+        card_num -= 1
+        card = self.hand[card_num]
+        match card.get_card_type():
+            #you can handle this later
+            case "mana": self.add_to_mana(card)
+            case "creature":
+                if self.mana_check(card):
+                    self.take_mana(card)
+                    del self.hand[card_num]
+                    self.active_cards.append(card)
+                    return True
+                else:
+                    return False
+            
+        
+        
+        
+        
