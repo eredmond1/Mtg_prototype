@@ -1,6 +1,6 @@
 import random
-from Mtg_game.Cards.card import Card  # If you need to check card types
-from Mtg_game.Cards.creature import Creature 
+# from Mtg_game.Cards.card import Card  # If you need to check card types
+# from Mtg_game.Cards.creature import Creature 
 
 class Player:
     def __init__(self, name, starting_life=20):
