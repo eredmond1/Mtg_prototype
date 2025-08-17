@@ -1,4 +1,4 @@
-from Mtg_game.player import Player
+
 
 class CombatManager:
     def __init__(self, attacking_player, defending_player):
@@ -165,3 +165,23 @@ class CombatManager:
         if player_damage > 0:
             print(f"\n{self.defending_player.name} takes {player_damage} total damage from unblocked creatures!")
             self.defending_player.take_damage(player_damage)
+    
+    def run_combat(self):
+        """Run the entire combat phase. Returns True if combat occurred, False if skipped."""
+        # Check if attacker has creatures that can attack
+        if not self.attacking_player.get_available_attackers():
+            print(f"{self.attacking_player.name} has no creatures that can attack!")
+            print("Skipping combat phase...")
+            return False
+        
+        # Combat phases
+        self.declare_attackers()
+        
+        # Only do blocking if there are attackers
+        if self.attackers:
+            self.declare_blockers()
+            self.resolve_combat()
+            return True
+        else:
+            print("No attackers declared, skipping combat.")
+            return False

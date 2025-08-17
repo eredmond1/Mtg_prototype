@@ -1,4 +1,4 @@
-from Mtg_game.Cards.card import Card 
+from card import Card 
 
 class Mana(Card):
     
